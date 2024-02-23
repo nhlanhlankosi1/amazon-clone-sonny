@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* add some global css */
+@layer components {
+    .link {
+        @apply cursor-pointer hover:underline
+    }
+}
