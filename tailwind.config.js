@@ -18,5 +18,6 @@ module.exports = {
   variants: {
     extend: {},
   },
+  //This plugin is to help cut the number of lines of text shown to the user
   plugins: [require("@tailwindcss/line-clamp")],
 };

@@ -1,22 +1,38 @@
 import Head from "next/head";
 import Header from "../components/Header";
+import Banner from "../components/Banner";
+import ProductFeed from "../components/ProductFeed";
 
-export default function Home() {
+export default function Home({ products }) {
+  //N.B - here the "products" are passed in as props (here they are destructured) from an API call triggered by the function getServerSideProps() below
   return (
-    <div>
+    <div className="bg-gray-100">
       <Head>
         <title>Amazon 2.0</title>
       </Head>
 
       <Header />
 
-      <main>
+      <main className="max-w-screen-2xl mx-auto">
         {/* Banner */}
-        
+        <Banner />
 
         {/* Product Feed */}
-        
-        </main>
+        <ProductFeed products={products} />
+      </main>
     </div>
   );
+}
+
+//Server-side render: this function triggers Next.js to automatically render the web page server side before sending the page back to the client. In this case we are returning products from the fakestoreapi.
+export async function getServerSideProps(context) {
+  const products = await fetch("https://fakestoreapi.com/products").then(
+    (res) => res.json()
+  );
+
+  return {
+    props: {
+      products,
+    },
+  };
 }
