@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { StarIcon } from "@heroicons/react/solid";
 import Currency from "react-currency-formatter";
+import { useDispatch } from "react-redux";
+import { addToBasket } from "../slices/basketSlice";
 
 const MAX_RATING = 5;
 const MIN_RATING = 1;
 
 function Product({ id, title, price, description, category, image }) {
+  //Create a dispatch hook that will be use to add items to the cart
+  const dispatch = useDispatch();
+
   //State for product rating stars
   const [rating] = useState(
     //Create a random number between MIN_RATING and MAX_RATING. This number will be used to randomly set the number of star ratings
@@ -15,6 +20,22 @@ function Product({ id, title, price, description, category, image }) {
 
   //State to determine whether the product has Amazon Prime delivery or not. Randomise as well, if the random number is less that 0.5 the it does NOT have Prime delivery
   const [hasPrime] = useState(Math.random() < 0.5);
+
+  const addItemToBasket = () => {
+    const product = {
+      id,
+      title,
+      price,
+      rating,
+      description,
+      category,
+      image,
+      hasPrime,
+    };
+
+    //At this point we are sending the product as an action to the REDUX store...the basket slice
+    dispatch(addToBasket(product));
+  };
 
   return (
     <div className="relative flex flex-col m-5 bg-white z-30 p-10">
@@ -31,7 +52,7 @@ function Product({ id, title, price, description, category, image }) {
         {Array(rating)
           .fill()
           .map((_, i) => (
-            <StarIcon className="h-5 text-yellow-500" />
+            <StarIcon key={i} className="h-5 text-yellow-500" />
           ))}
       </div>
 
@@ -54,7 +75,9 @@ function Product({ id, title, price, description, category, image }) {
       )}
 
       {/* button - custom class defined in styles/globals.css */}
-      <button className="mt-auto button">Add To Basket</button>
+      <button onClick={addItemToBasket} className="mt-auto button">
+        Add To Basket
+      </button>
     </div>
   );
 }

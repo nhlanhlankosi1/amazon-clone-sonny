@@ -13,6 +13,7 @@ export default function Home({ products }) {
 
       <Header />
 
+      {/* max-w-screen-2xl mx-auto - this is to make sure that the page has a max width, nomatter how large the screen on which it is rendered on is */}
       <main className="max-w-screen-2xl mx-auto">
         {/* Banner */}
         <Banner />

@@ -6,7 +6,20 @@ import {
   ShoppingCartIcon,
 } from "@heroicons/react/outline";
 
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { selectItems } from "../slices/basketSlice";
+
 function Header() {
+  //Grab the session to determine whether the user is logged in or not
+  const { data: session } = useSession();
+  //Use the NextJS inbuilt router to move between pages i.e. when the amazon icon is clicked go to the root-route
+  const router = useRouter();
+
+  //Grab the cart items from the REDUX global store. This will return an array of Product items. In this component, we want to know how many items have been added to the cart so as to update the cart number counter using the cartItems.length
+  const cartItems = useSelector(selectItems);
+
   return (
     <header>
       {/* Top nav */}
@@ -14,8 +27,9 @@ function Header() {
       <div className="flex items-center bg-amazon_blue p-1 flex-grow py-2">
         {/* mt - margin top, sm: flex-grow-0 - after mobile width stop */}
         <div className="mt-2 flex items-center flex-grow sm:flex-grow-0">
-          {/* Amazon logo - Here we are using a Next.js <Image /> component. So we need to config the Next.js to allow connections on the links specified in the src. This is done in the next.config.js file */}
+          {/* Amazon logo - Here we are using a Next.js <Image /> component. So we need to config the Next.js to allow connections on the links specified in the src. This is done in the next.config.js file. When we click this image, we are going to route to the home page */}
           <Image
+            onClick={() => router.push("/")}
             src="https://links.papareact.com/f90"
             width={150}
             height={40}
@@ -38,9 +52,9 @@ function Header() {
         {/* Right side of the screen after the search bar */}
         {/* text-xs - make the text extra small, space-x-6 - space out items in the x-axis, mx-6 - margin in the x-axis, whitespace-nowrap - avoid content from wrapping around */}
         <div className="text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap">
-          {/* Since all 3 divs have the same styles, to avoid repetition they are applied via the ../styles/globals.css file */}
-          <div className="link">
-            <p>Hello, Nhlanhla</p>
+          {/* Since all 3 divs have the same styles, to avoid repetition they are applied via the ../styles/globals.css file. Add an onClick to the div to initiate Google sign in if there's no session else we need to sign out */}
+          <div onClick={!session ? signIn : signOut} className="link">
+            <p>{session ? `Hello, ${session.user.name}` : "Sign In"}</p>
             <p className="font-extrabold md:text-sm">Accounts & Lists</p>
           </div>
 
@@ -49,9 +63,12 @@ function Header() {
             <p className="font-extrabold md:text-sm">& Orders</p>
           </div>
 
-          <div className="relative link flex items-center">
+          <div
+            onClick={() => router.push("/checkout")}
+            className="relative link flex items-center"
+          >
             <span className="absolute top-0 right-0 md:right-10 h-4 w-4 bg-yellow-400 text-center rounded-full text-black font-bold">
-              0
+              {cartItems.length}
             </span>
             <ShoppingCartIcon className="h-10" />
             <p className="hidden md:inline font-extrabold md:text-sm mt-2">

@@ -8,19 +8,17 @@ function ProductFeed({ products }) {
       {/*Get the products passed in from the FakestoreAPI call in index.js function getServerSideProps(). Map through these products and destructure the product object to get the properties of the object (id, title, price e.t.c). We are going to be showing the first 4 before the banner for the advert and we going to show the rest after the advert banner*/}
       {products
         .slice(0, 4)
-        .map(({ id, title, price, description, category, image }) => {
-          return (
-            <Product
-              key={id}
-              id={id}
-              title={title}
-              price={price}
-              description={description}
-              category={category}
-              image={image}
-            />
-          );
-        })}
+        .map(({ id, title, price, description, category, image }) => (
+          <Product
+            key={id}
+            id={id}
+            title={title}
+            price={price}
+            description={description}
+            category={category}
+            image={image}
+          />
+        ))}
 
       <img
         className="md:col-span-full"
@@ -32,26 +30,7 @@ function ProductFeed({ products }) {
       <div className="md:col-span-2">
         {products
           .slice(4, 5)
-          .map(({ id, title, price, description, category, image }) => {
-            return (
-              <Product
-                key={id}
-                id={id}
-                title={title}
-                price={price}
-                description={description}
-                category={category}
-                image={image}
-              />
-            );
-          })}
-      </div>
-
-      {/* Show the rest of the products from product 5 . This happens after the product which is */}
-      {products
-        .slice(5, products.length)
-        .map(({ id, title, price, description, category, image }) => {
-          return (
+          .map(({ id, title, price, description, category, image }) => (
             <Product
               key={id}
               id={id}
@@ -61,8 +40,23 @@ function ProductFeed({ products }) {
               category={category}
               image={image}
             />
-          );
-        })}
+          ))}
+      </div>
+
+      {/* Show the rest of the products from product 5 . This happens after the product which is */}
+      {products
+        .slice(5, products.length)
+        .map(({ id, title, price, description, category, image }) => (
+          <Product
+            key={id}
+            id={id}
+            title={title}
+            price={price}
+            description={description}
+            category={category}
+            image={image}
+          />
+        ))}
     </div>
   );
 }
