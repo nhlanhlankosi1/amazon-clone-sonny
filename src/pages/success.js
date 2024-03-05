@@ -20,7 +20,7 @@ function Success() {
           <p>
             Thank you for shopping with us. We'll send a confirmation once your
             item(s) have shipped, if you would like to check the status of your
-            orders please press the link below
+            orders please press the link below.
           </p>
 
           <button
