@@ -5,6 +5,10 @@ import { selectItems, selectTotal } from "../slices/basketSlice";
 import CheckoutProduct from "../components/CheckoutProduct";
 import Currency from "react-currency-formatter";
 import { useSession } from "next-auth/react";
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
+//Create a Stripe promise, here you pass in a lowercase `stripe_public_key` even though it is uppercased in the process.env file. This is to comform to the was these key are pulled into the STRIPE API. The lowercase `stripe_public_key` is referenced from next.config.js file
+const stripePromise = loadStripe(process.env.stripe_public_key);
 
 function Checkout() {
   //Grab the cart items from the REDUX global store. This will return an array of Product items. In this component, we want to render the items in the cart
@@ -14,6 +18,26 @@ function Checkout() {
 
   //Get the total price from REDUX
   const totalPrice = useSelector(selectTotal);
+
+  //Create Stripe Checkout Session
+  const createCheckoutSession = async () => {
+    const stripe = await stripePromise;
+
+    //Call the backend to create a checkout session. This will use axios to call the endpoint which is the file 'create-checkout-session' inside the 'api' directory. In the post request also pass in some data, items and the user's email. This data will be captured in the create-checkout-session file via the req.body
+    const checkoutSession = await axios.post("/api/create-checkout-session", {
+      cartItems: cartItems,
+      email: session.user.email,
+    });
+
+    //Redirect the user to the Stripe Checkout
+    const result = await stripe.redirectToCheckout({
+      sessionId: checkoutSession.data.id,
+    });
+
+    if (result.error) {
+      alert(result.error.message);
+    }
+  };
 
   return (
     <div className="bg-gray-100">
@@ -66,6 +90,8 @@ function Checkout() {
               </h2>
 
               <button
+                role="link"
+                onClick={createCheckoutSession}
                 disabled={!session}
                 className={`button mt-2 ${
                   !session &&

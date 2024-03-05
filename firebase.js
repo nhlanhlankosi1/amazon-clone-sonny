@@ -10,3 +10,12 @@ const firebaseConfig = {
   appId: "1:1047681443862:web:a065f3903e9bc4a28fed37",
   measurementId: "G-F3RBNEX2FS",
 };
+
+//Get the firebase app for any front end work..This is done when checking if the user is logged in in the orders.js file
+const app = !firebase.apps.length
+  ? firebase.initializeApp(firebaseConfig)
+  : firebase.app();
+
+const db = app.firestore();
+
+export default db;
